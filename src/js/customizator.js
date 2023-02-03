@@ -4,15 +4,43 @@ export default class Customizator {
         this.colorPicker = document.createElement('input');
 
         this.btnBlock.addEventListener('click', (e) => this.onScaleChange(e));
+        this.colorPicker.addEventListener('input', (e) => this.onColorChange(e));
     }
 
     onScaleChange(e) {
         let scale;
-        
+        const body = document.body;
+        if (e.target.value) {
+            scale = +e.target.value.replace(/x/g, '');
+        }
+
+        function recursy(elem) {
+            elem.childNodes.forEach(node => {
+                if (node.nodeName === '#text' && node.nodeValue.replace(/\s+/g, '').length > 0) {
+                    if (!node.parentNode.getAttribute('data-fz')) {
+                        let value = window.getComputedStyle(node.parentNode).fontSize;
+                        node.parentNode.setAttribute('data-fz', +value.replace(/px/g, ''));
+                        node.parentNode.style.fontSize = node.parentNode.getAttribute('data-fz') * scale + 'px';
+                    } else {
+                        node.parentNode.style.fontSize = node.parentNode.getAttribute('data-fz') * scale + 'px';
+                    }
+
+
+                } else {
+                    recursy(node);
+                }
+            });
+        }
+
+        recursy(body);
+    }
+
+    onColorChange(e) {
+        document.body.style.backgroundColor = e.target.value;
     }
 
     render() {
-        
+
         let scaleInputS = document.createElement('input'),
             scaleInputM = document.createElement('input'),
             panel = document.createElement('div');
@@ -29,15 +57,12 @@ export default class Customizator {
         scaleInputM.setAttribute('value', '1.5x');
         this.colorPicker.setAttribute('type', 'color');
         this.colorPicker.setAttribute('value', '#ffffff');
-        
+
 
         this.btnBlock.append(scaleInputS, scaleInputM);
 
         panel.classList.add('panel');
 
         document.body.append(panel);
-
-        
-        console.log(this.btnBlock, scaleInputM, scaleInputS);
     }
 }
