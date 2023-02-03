@@ -21,7 +21,6 @@ class Customizator {
   }
   onScaleChange(e) {
     let scale;
-    const body = document.body;
     if (e.target.value) {
       scale = +e.target.value.replace(/x/g, '');
     }
@@ -40,7 +39,7 @@ class Customizator {
         }
       });
     }
-    recursy(body);
+    recursy(document.body);
   }
   onColorChange(e) {
     document.body.style.backgroundColor = e.target.value;
